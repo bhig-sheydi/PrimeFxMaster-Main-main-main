@@ -1,0 +1,103 @@
+import React, { useState } from 'react';
+import { db, useAuthState } from '../config/firebase'; // Adjust the import path as necessary
+import { doc, setDoc } from "firebase/firestore";
+
+const CreateAccount = () => {
+  const [formData, setFormData] = useState({
+    accountType: '',
+    saver: '',
+    balance: 0
+  });
+  const [currentUser] = useAuthState();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (currentUser) {
+      if (formData.accountType === 'Real' && formData.balance !== 0) {
+        alert("Real accounts cannot be funded from this page. Balance must be 0.");
+        return;
+      }
+      const accountDocRef = doc(db, "users", currentUser.uid, "accounts", formData.accountType);
+      await setDoc(accountDocRef, {
+        ...formData,
+        equity: formData.balance // Set equity equal to balance
+      });
+      alert("Account details added successfully!");
+      setFormData({
+        accountType: '',
+        saver: '',
+        balance: 0,
+      });
+    } else {
+      alert("You must be logged in to add account details.");
+    }
+  };
+
+  return (
+    <div className='w-full p-4'>
+      <h3 className='font-bold mb-4'>Add Account Details</h3>
+      <form onSubmit={handleSubmit} className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='accountType'>
+            Account Type
+          </label>
+          <select
+            name='accountType'
+            value={formData.accountType}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+          >
+            <option value=''>Select account type</option>
+            <option value='Real'>Real</option>
+            <option value='Contests'>Contests</option>
+            <option value='Demo'>Demo</option>
+          </select>
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='saver'>
+            Saver
+          </label>
+          <input
+            type='text'
+            name='saver'
+            value={formData.saver}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Enter saver'
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='balance'>
+            Balance
+          </label>
+          <input
+            type='number'
+            name='balance'
+            value={formData.balance}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Enter balance (Only for Demo/Contest Accounts)'
+          />
+        </div>
+        <div className='flex items-center justify-between'>
+          <button
+            type='submit'
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+          >
+            Add Account
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CreateAccount;
