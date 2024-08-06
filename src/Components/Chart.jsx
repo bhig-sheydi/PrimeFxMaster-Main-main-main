@@ -308,6 +308,10 @@ const handleTrade = (action) => {
     });
   
     seriesRef.current.setMarkers(markersRef.current);
+    setBalance(() => {
+      const storedBalance = localStorage.getItem('balance');
+      return storedBalance ? parseFloat(0) : 0; // Default to 0 if not set
+    })
   };
   
 

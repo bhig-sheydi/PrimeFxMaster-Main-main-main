@@ -44,6 +44,11 @@ const Nav2 = () => {
             <h6>Dashboard</h6> 
           </li>
          </Link>
+         <Link to={"CreateAccount"}>
+         <li className='h-[130%] pt-3 pb-3 pl-3 hover:bg-gray-400 rounded-e-full flex items-center text-sm gap-5'>
+            <h6>Create Account</h6> 
+          </li>
+         </Link>
           <Link to={"/promo"}>
             <li className='h-[130%] pt-3 pb-3 pl-3 hover:bg-gray-400 rounded-e-full flex items-center text-sm gap-5'>
               <h6>Promotions</h6>

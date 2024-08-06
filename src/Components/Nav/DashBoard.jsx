@@ -16,7 +16,8 @@ const DashBoard = () => {
   const [changer, setChanger] = useState(0);
   const [ids, setIds] = useAuthState(0);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [isModalOpen2, setIsModalOpen2] = useState(false); // Modal state
+  const [isModalOpen2, setIsModalOpen2] = useState(false); // Modal state?
+  const [isModalOpen3, setIsModalOpen3] = useState(false); // Modal state?
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
@@ -46,16 +47,23 @@ const DashBoard = () => {
   };
 
   const handleTradeClick = () => {
-    if (id2 == 2 && accountDetails[2]?.balance <= 0) {
+
+    if(accountDetails.length < 3)
+    {
+      setIsModalOpen3(true)
+    }
+    if (id2 == 2 && accountDetails[2]?.balance <= 0 ) {
       setIsModalOpen(true);
     } 
 
-    if(id2 == 0)
+    if(id2 == 0 )
     {
       setIsModalOpen2(true);  
     }
  
   };
+
+  
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -69,6 +77,14 @@ const DashBoard = () => {
     
   };
 
+
+  const closeModal3 = () => {
+  
+    setIsModalOpen3(false);
+    
+  };
+
+  
   return (
     <div className='w-full pl-5 pr-5 h-full'>
       <Frame>
@@ -253,6 +269,17 @@ const DashBoard = () => {
             <p>There Are No Contests Available Yet</p>
             <div className='mt-4'>
               <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={closeModal2}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen3 && (
+        <div className=' absolute inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50'>
+          <div className='bg-white p-8 rounded-lg'>
+            <h2 className='text-2xl mb-4'>Insufficient Balance</h2>
+            <p>Open All Three Accounts </p>
+            <div className='mt-4'>
+              <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={closeModal3}>Close</button>
             </div>
           </div>
         </div>

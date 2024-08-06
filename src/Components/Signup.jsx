@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, provider } from '../config/firebase'; // Ensure these are correctly imported
-import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth"; // Import necessary Firebase Auth functions
+import { auth, provider } from '../config/firebase'; // Ensure correct import
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, updateProfile } from 'firebase/auth';
 import { useMyContext } from './Mycontext';
 import LOGO from '../assets/NAV.png';
 import '../Components/login.css';
@@ -55,10 +55,14 @@ const Signup = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Update profile and send verification email
       await updateProfile(user, { displayName: firstName });
+      await sendEmailVerification(user);
 
       console.log('User created:', user);
-      navigate('/Home');
+      alert('A verification email has been sent to your email address. Please verify your email before logging in.');
+      navigate('/login'); // Redirect to a page that informs users to check their email
+
     } catch (error) {
       console.error('Error signing up:', error.code, error.message);
       alert('Failed to create account. Please try again.');
@@ -71,7 +75,7 @@ const Signup = () => {
     setLoading(true);
     try {
       await signInWithPopup(auth, provider);
-      navigate('/Home');
+      navigate('/');
     } catch (error) {
       console.error('Error signing in with Google:', error);
       alert('Failed to sign in with Google. Please try again.');
